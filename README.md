@@ -1,0 +1,1 @@
+# manifest4x-trading-bot
