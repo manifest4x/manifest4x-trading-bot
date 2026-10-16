@@ -15,8 +15,10 @@ async def test_short_signal_becomes_negative_notification():
     (sent,) = notifier.sent
     assert sent.title == "🔴 SHORT · EURUSD"
     assert sent.tone is Tone.NEGATIVE
-    assert sent.fields["Entry"] == "1.08500"
-    assert sent.fields["TP1"] == "65% at 1R"
+    assert sent.fields["📍 Entry"] == "1.08500"
+    assert sent.fields["🎯 TP1"] == "65% at 1R"
+    assert sent.fields["📊 Setup"].startswith("ORB Breakdown")
+    assert sent.timestamp.isoformat() == "2026-10-13T14:35:00+00:00"
 
 
 async def test_long_signal_becomes_positive_notification():

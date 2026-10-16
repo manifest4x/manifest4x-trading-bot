@@ -6,7 +6,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
     service_name: str = "manifest4x-trading-bot"
-    service_version: str = "0.1.0"
+    service_version: str = "0.1.1"
     log_level: str = "INFO"
 
     webhook_secret: SecretStr

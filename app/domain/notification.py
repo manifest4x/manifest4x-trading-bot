@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from datetime import datetime
 from enum import StrEnum
 
 
@@ -19,3 +20,4 @@ class Notification:
     fields: dict[str, str] = field(default_factory=dict)
     tone: Tone = Tone.NEUTRAL
     footer: str = ""
+    timestamp: datetime | None = None

@@ -1,5 +1,6 @@
 import time
 from collections.abc import Sequence
+from datetime import UTC, datetime
 
 from app.domain.errors import NotificationDeliveryError
 from app.domain.notification import Notification, Tone
@@ -52,16 +53,26 @@ class SignalService:
             title += f" · {signal.symbol}"
 
         candidates = {
-            "Entry": signal.price,
-            "Time": signal.time,
-            "Stop loss": signal.sl,
-            "TP1": signal.tp1,
-            "TP2": signal.tp2,
+            "📍 Entry": signal.price,
+            "🛑 Stop loss": signal.sl,
+            "🎯 TP1": signal.tp1,
+            "🎯 TP2": signal.tp2,
+            "📊 Setup": signal.confluence,
         }
         return Notification(
             title=title,
-            body=signal.confluence or "",
             fields={name: value for name, value in candidates.items() if value},
             tone=Tone.POSITIVE if is_long else Tone.NEGATIVE,
             footer=_FOOTER,
+            timestamp=_parse_time(signal.time),
         )
+
+
+def _parse_time(value: str | None) -> datetime | None:
+    if not value:
+        return None
+    try:
+        parsed = datetime.fromisoformat(value)
+    except ValueError:
+        return None
+    return parsed if parsed.tzinfo else parsed.replace(tzinfo=UTC)

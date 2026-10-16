@@ -47,13 +47,15 @@ class DiscordNotifier:
             "title": notification.title[:256],
             "color": _COLORS[notification.tone],
         }
+        # One "**label:** value" line per field: easier to scan than Discord's column grid.
+        lines = [f"**{name}:** {value}" for name, value in notification.fields.items()]
+        description = "\n".join(lines)
         if notification.body:
-            embed["description"] = notification.body[:4000]
-        if notification.fields:
-            embed["fields"] = [
-                {"name": name[:256], "value": value[:1024] or "-", "inline": True}
-                for name, value in notification.fields.items()
-            ]
+            description += ("\n\n" if lines else "") + notification.body
+        if description:
+            embed["description"] = description[:4000]
         if notification.footer:
             embed["footer"] = {"text": notification.footer[:2048]}
+        if notification.timestamp:
+            embed["timestamp"] = notification.timestamp.isoformat()
         return embed

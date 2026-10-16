@@ -1,3 +1,5 @@
+from datetime import UTC, datetime
+
 import httpx
 import pytest
 import respx
@@ -22,10 +24,10 @@ async def test_posts_embed_with_bot_authorization(notifier):
     await notifier.send(
         Notification(
             title="🔴 SHORT · EURUSD",
-            body="confluence",
-            fields={"Entry": "1.085"},
+            fields={"Entry": "1.085", "TP1": "65% at 1R"},
             tone=Tone.NEGATIVE,
             footer="Manifest4X",
+            timestamp=datetime(2026, 10, 16, 14, 45, tzinfo=UTC),
         )
     )
 
@@ -33,8 +35,8 @@ async def test_posts_embed_with_bot_authorization(notifier):
     assert request.headers["authorization"] == "Bot bot-secret"
     embed = httpx.Response(200, content=request.content).json()["embeds"][0]
     assert embed["title"] == "🔴 SHORT · EURUSD"
-    assert embed["description"] == "confluence"
-    assert embed["fields"] == [{"name": "Entry", "value": "1.085", "inline": True}]
+    assert embed["description"] == "**Entry:** 1.085\n**TP1:** 65% at 1R"
+    assert embed["timestamp"] == "2026-10-16T14:45:00+00:00"
     assert embed["footer"] == {"text": "Manifest4X"}
     assert embed["color"] == 0xE74C3C
 
